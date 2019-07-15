@@ -63,6 +63,7 @@ endif
 MPY_CROSS_FLAGS += -march=xtensa
 
 SRC_C = \
+	softuart.c \
 	strtoll.c \
 	main.c \
 	help.c \
@@ -82,6 +83,7 @@ SRC_C = \
 	machine_rtc.c \
 	machine_adc.c \
 	machine_uart.c \
+	machine_softuart.c \
 	machine_wdt.c \
 	machine_hspi.c \
 	modesp.c \
