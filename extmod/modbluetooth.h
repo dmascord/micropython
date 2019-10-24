@@ -120,14 +120,14 @@ _IRQ_ALL                             = const(0xffff)
 
 // Common UUID type.
 // Ports are expected to map this to their own internal UUID types.
+// Internally the UUID data is little-endian, but the user should only
+// ever see this if they use the buffer protocol, e.g. in order to
+// construct an advertising payload (which needs to be in LE).
+// Both the constructor and the print function work in BE.
 typedef struct {
     mp_obj_base_t base;
     uint8_t type;
-    union {
-        uint16_t _16;
-        uint32_t _32;
-        uint8_t _128[16];
-    } uuid;
+    uint8_t data[16];
 } mp_obj_bluetooth_uuid_t;
 
 //////////////////////////////////////////////////////////////
@@ -140,8 +140,10 @@ typedef struct {
 // Any method returning an int returns errno on failure, otherwise zero.
 
 // Note: All methods dealing with addresses (as 6-byte uint8 pointers) are in big-endian format.
-// (i.e. the same way they would be printed on a device sticker or in a UI).
-// This means that the lower level implementation might need to reorder them (e.g. Nimble works in little-endian)
+// (i.e. the same way they would be printed on a device sticker or in a UI), so the user sees
+// addresses in a way that looks like what they'd expect.
+// This means that the lower level implementation will likely need to reorder them (e.g. Nimble
+// works in little-endian, as does BLE itself).
 
 // Enables the Bluetooth stack.
 int mp_bluetooth_init(void);
@@ -157,13 +159,13 @@ void mp_bluetooth_get_device_addr(uint8_t *addr);
 
 // Start advertisement. Will re-start advertisement when already enabled.
 // Returns errno on failure.
-int mp_bluetooth_gap_advertise_start(bool connectable, uint16_t interval_ms, const uint8_t *adv_data, size_t adv_data_len, const uint8_t *sr_data, size_t sr_data_len);
+int mp_bluetooth_gap_advertise_start(bool connectable, int32_t interval_us, const uint8_t *adv_data, size_t adv_data_len, const uint8_t *sr_data, size_t sr_data_len);
 
 // Stop advertisement. No-op when already stopped.
 void mp_bluetooth_gap_advertise_stop(void);
 
 // Start adding services. Must be called before mp_bluetooth_register_service.
-int mp_bluetooth_gatts_register_service_begin(bool reset);
+int mp_bluetooth_gatts_register_service_begin(bool append);
 // // Add a service with the given list of characteristics to the queue to be registered.
 // The value_handles won't be valid until after mp_bluetooth_register_service_end is called.
 int mp_bluetooth_gatts_register_service(mp_obj_bluetooth_uuid_t *service_uuid, mp_obj_bluetooth_uuid_t **characteristic_uuids, uint8_t *characteristic_flags, mp_obj_bluetooth_uuid_t **descriptor_uuids, uint8_t *descriptor_flags, uint8_t *num_descriptors, uint16_t *handles, size_t num_characteristics);
@@ -186,7 +188,7 @@ int mp_bluetooth_gap_disconnect(uint16_t conn_handle);
 
 #if MICROPY_PY_BLUETOOTH_ENABLE_CENTRAL_MODE
 // Start a discovery (scan). Set duration to zero to run continuously.
-int mp_bluetooth_gap_scan_start(int32_t duration_ms);
+int mp_bluetooth_gap_scan_start(int32_t duration_ms, int32_t interval_us, int32_t window_us);
 
 // Stop discovery (if currently active).
 int mp_bluetooth_gap_scan_stop(void);
