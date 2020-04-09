@@ -28,8 +28,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "ets_sys.h"
-#include "mem.h"
+//#include "ets_sys.h"
+//#include "mem.h"
 #include "softuart.h"
 
 
