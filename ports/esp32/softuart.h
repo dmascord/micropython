@@ -1,7 +1,7 @@
 #ifndef SOFTUART_H_
 #define SOFTUART_H_
 
-#include "user_interface.h"
+//#include "user_interface.h"
 
 #define SOFTUART_MAX_RX_BUFF 256 
 
