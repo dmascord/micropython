@@ -19,6 +19,7 @@ extern const mp_obj_type_t machine_pwm_type;
 extern const mp_obj_type_t machine_hw_i2c_type;
 extern const mp_obj_type_t machine_hw_spi_type;
 extern const mp_obj_type_t machine_uart_type;
+extern const mp_obj_type_t pyb_softuart_type;
 extern const mp_obj_type_t machine_rtc_type;
 extern const mp_obj_type_t machine_sdcard_type;
 
