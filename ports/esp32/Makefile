@@ -295,6 +295,7 @@ endif
 # List of MicroPython source and object files
 
 SRC_C = \
+	softuart.c \
 	main.c \
 	uart.c \
 	gccollect.c \
@@ -311,6 +312,7 @@ SRC_C = \
 	machine_i2c.c \
 	machine_pwm.c \
 	machine_uart.c \
+	machine_softuart.c \
 	modmachine.c \
 	modnetwork.c \
 	network_lan.c \
